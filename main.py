@@ -10,6 +10,8 @@ from utils import manage_events
 
 load_dotenv()
 DISCORD_BOT_TOKEN = os.getenv("DISCORD_BOT_TOKEN")
+INTEGRATION_ID = os.getenv("INTEGRATION_ID")
+COMPOSIO_API_KEY = os.getenv("COMPOSIO_API_KEY")
 
 temp_user_db = TinyDB('./db/temp_user.json') # Temporary database to store user data for the current session
 user_db = TinyDB('./db/user.json')
@@ -52,9 +54,9 @@ async def _create_account(ctx):
     is_account = user_db.search(Account.user_id == user_id)
 
     if not is_account:
-        payload = {"integrationId": "93233aef-2420-452b-af60-f25db07fdd24"}
+        payload = {"integrationId": INTEGRATION_ID}
         headers = {
-            "X-API-Key": "9gexdax28jcqod4x3lszs",
+            "X-API-Key": COMPOSIO_API_KEY,
             "Content-Type": "application/json"
         }
 
@@ -67,6 +69,37 @@ async def _create_account(ctx):
 
     else:
         await ctx.send("You already have an account.")
+
+
+@bot.command(name='authenticate')
+async def _authenticate(ctx):
+    """
+        Create an new account again (because authentication credentials might be expired) and save `user_id` and `connected_account_id` in the database.
+    """
+
+    url = "https://backend.composio.dev/api/v1/connectedAccounts"
+    user_id = ctx.author.id
+
+    # Check if the user already has an account
+    Account = Query()
+    is_account = user_db.search(Account.user_id == user_id)
+
+    if is_account:
+        payload = {"integrationId": INTEGRATION_ID}
+        headers = {
+            "X-API-Key": COMPOSIO_API_KEY,
+            "Content-Type": "application/json"
+        }
+
+        response = requests.post(url, headers=headers, data=json.dumps(payload))
+        response_data = json.loads(response.text)
+
+        user_db.update({"connected_account_id": response_data["connectedAccountId"]}, Account.user_id == user_id)
+
+        await ctx.send(f"Click [here]({response_data['redirectUrl']}) to connect your account.\nOnce you have connected your account, you can use `!calendar` to manage events.")
+
+    else:
+        await ctx.send("You don't have an account yet. Please create one using `!create_account`.")
 
 
 @bot.command(name='calendar')
