@@ -1,54 +1,105 @@
+import discord
+from discord.ext import commands
 import os
-import dotenv
-from datetime import datetime
-from crewai import Agent, Task
-from composio_crewai import App, ComposioToolSet
-from langchain_google_genai import ChatGoogleGenerativeAI
+from dotenv import load_dotenv
+from tinydb import TinyDB, Query
+import requests 
+import json
+from utils import manage_events
 
-# Load the environment variables
-dotenv.load_dotenv()
 
-GOOGLE_API_KEY = os.environ["GOOGLE_API_KEY"]
+load_dotenv()
+DISCORD_BOT_TOKEN = os.getenv("DISCORD_BOT_TOKEN")
 
-llm = ChatGoogleGenerativeAI(model="gemini-pro", temperature=0.1, google_api_key=GOOGLE_API_KEY)
+temp_user_db = TinyDB('./db/temp_user.json') # Temporary database to store user data for the current session
+user_db = TinyDB('./db/user.json')
 
-composio_toolset = ComposioToolSet()
-tools = composio_toolset.get_tools(apps=[App.GOOGLECALENDAR])
+intents = discord.Intents.default()
+intents.message_content = True
+bot = commands.Bot(command_prefix='!', intents=intents)
 
-date = datetime.today().strftime("%Y-%m-%d")
-timezone = datetime.now().astimezone().tzinfo
 
-todo = """
-On 27th June
-    9AM - 12PM -> Learn something,
-    1PM - 3PM -> Code,
-    5PM - 7PM -> Meeting,
-    8PM - 10PM -> Game
-"""
+@bot.event
+async def on_ready():
+    # keeps track of how many guilds / servers the bot is associated with.
+    guild_count = 0
 
-def run_crew():
-    calendar_agent = Agent(
-        role="Google Calendar Agent",
-        goal="""You take action on Google Calendar using Google Calendar APIs""",
-        backstory="""You are an AI agent responsible for taking actions on Google Calendar on users' behalf.
-        You need to take action on Calendar using Google Calendar APIs. Use correct tools to run APIs from the given tool-set.""",
-        verbose=True,
-        tools=tools,
-        llm=llm,
-    )
+    for guild in bot.guilds:
+        print(f"- {guild.id} (name: {guild.name})")
+        guild_count = guild_count + 1
 
-    def log_response(response):
-        with open('calendar_response.log', 'a') as f:
-            f.write(str(response) + '\n')
+    print("SampleDiscordBot is in " + str(guild_count) + " guilds.")
 
-    task = Task(
-        description=f"Book slots according to \n {todo}. Label them with the work provided to be done in that time period. Schedule it for given date. Today's date is {date} and make the timezone be {timezone}.",
-        agent=calendar_agent,
-        expected_output="Successfully create all events",
-        on_result=log_response,
-    )
 
-    task.execute()
-    return "Crew run initiated", 200
+@bot.event
+async def on_message(message):
+    # if message.content.lower() == "hello":
+        # await message.channel.send("hey bro, what's up?")
+    await bot.process_commands(message) # Ensures that other commands are processed
 
-run_crew()
+
+@bot.command(name='create_account')
+async def _create_account(ctx):
+    """
+        Create an account and save `user_id` and `connected_account_id` in the database.
+    """
+
+    url = "https://backend.composio.dev/api/v1/connectedAccounts"
+    user_id = ctx.author.id
+
+    # Check if the user already has an account
+    Account = Query()
+    is_account = user_db.search(Account.user_id == user_id)
+
+    if not is_account:
+        payload = {"integrationId": "93233aef-2420-452b-af60-f25db07fdd24"}
+        headers = {
+            "X-API-Key": "9gexdax28jcqod4x3lszs",
+            "Content-Type": "application/json"
+        }
+
+        response = requests.post(url, headers=headers, data=json.dumps(payload))
+        response_data = json.loads(response.text)
+
+        temp_user_db.insert({"user_id": user_id, "connected_account_id": response_data["connectedAccountId"]})
+
+        await ctx.send(f"Click [here]({response_data['redirectUrl']}) to connect your account.\nOnce you have connected your account, you can use `!calendar` to manage events.")
+
+    else:
+        await ctx.send("You already have an account.")
+
+
+@bot.command(name='calendar')
+async def _calendar(ctx, *, message: str):
+    """
+        Manage events on Google Calendar. 
+    """
+
+    user_id = ctx.author.id
+
+    # Check if the user has an account
+    Account = Query()
+    is_account = user_db.search(Account.user_id == user_id)
+
+    if not is_account:
+        is_temp_account = temp_user_db.search(Account.user_id == user_id)
+
+        if not is_temp_account:
+            await ctx.send("You don't have an account yet. Please create one using `!create_account`.")
+            return
+
+        else:
+            # Move the temporary account to the main database
+            user_db.insert(is_temp_account[0])
+            temp_user_db.remove(Account.user_id == user_id)
+
+    await ctx.send("Processing your request...")
+
+    connected_account_id = user_db.search(Account.user_id == user_id)[0]["connected_account_id"]
+
+    response = manage_events(connected_account_id, message)
+    await ctx.send(response)
+
+
+
+bot.run(DISCORD_BOT_TOKEN)

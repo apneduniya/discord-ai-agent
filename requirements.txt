@@ -3,3 +3,7 @@ crewai[tools]
 python-dotenv
 composio_core
 composio-crewai
+langchain-google-genai
+discord
+tinydb
+langchain_core==0.2.3
