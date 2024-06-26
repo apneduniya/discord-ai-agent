@@ -32,7 +32,7 @@ def manage_events(connectedAccountId: str, prompt: str) -> str:
         :param required prompt: The prompt for the crew to follow.
     """
 
-    response = ""
+    log = ""
 
     calendar_agent = Agent(
         role="Google Calendar Agent",
@@ -45,7 +45,8 @@ def manage_events(connectedAccountId: str, prompt: str) -> str:
     )
 
     def log_response(response):
-        response += f"\n{response}"
+        nonlocal log
+        log += response + "\n"
 
     task = Task(
         description=f"""Manage events in Google Calendar based on: \n {prompt} \n 
@@ -53,13 +54,12 @@ def manage_events(connectedAccountId: str, prompt: str) -> str:
         The connected account ID (connectedAccountId) is {connectedAccountId}.
         """,
         agent=calendar_agent,
-        expected_output="Successfully scheduled the events",
+        expected_output="Successfully scheduled the events. Also your final answer should be a statement which fits the prompt dont say `Successfully scheduled the events`, also give more human like response and add some emojis if necessary.",
         on_result=log_response,
     )
 
-    task.execute()
+    response = task.execute()
     if response:
         return response
     else:
-        print(response)
-        return "Failed to schedule the events"
+        return "Something went wrong. Please try again."
