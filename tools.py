@@ -12,29 +12,75 @@ COMPOSIO_API_KEY = os.environ["COMPOSIO_API_KEY"]
 
 
 @tool("Create Event")
-def create_event(connectedAccountId: str, start_datetime: str, end_datetime: str, title: str, description: str | None = "") -> str:
+def create_event(connectedAccountId: str, start_datetime: str, end_datetime: str, title: str | None = None, description: str | None = None, eventType: str | None = None, create_meeting_room: bool | None = None, guestsCanSeeOtherGuests: bool | None = None, guestsCanInviteOthers: bool | None = None, location: str | None = None, visibility: str | None = None, attendees: list | None = None, send_updates: bool | None = None, guests_can_modify: bool | None = None, calendar_id: str | None = None) -> str:
     """
         Create a new event in a Google Calendar.
         :param required connectedAccountId: The ID of the connected account.
         :param required start_datetime: The start date and time of the event in ISO 8601 format.
         :param required end_datetime: The end date and time of the event in ISO 8601 format.
         :param required title: The title of the event.
-        :param optional description: The description of the event.
+        :param optional description: The description of the event.\
+        :param optional eventType: Specific type of the event. This cannot be modified after the event is created. 
+        Possible values are:
+        "default" - A regular event or not further specified.
+        "outOfOffice" - An out-of-office event.
+        "focusTime" - A focus-time event.
+        "workingLocation" - A working location event.
+        Currently, only "default " and "workingLocation" events can be created using the API. Extended support for other event types will be made available in later releases.
+        :param optional create_meeting_room: Whether to create a google meet event. If set to true, a link to the google meet event will be created and added to the event.
+        :param optional guestsCanSeeOtherGuests: Whether guests can see other guests.
+        :param optional guestsCanInviteOthers: Whether guests can invite others.
+        :param optional location: Geographic location of the event as free-form text.
+        :param optional visibility: Visibility of the event. 
+        Possible values are:
+        "default" - Uses the default visibility for events on the calendar. This is the default value.
+        "public" - The event is public and event details are visible to all readers of the calendar.
+        "private" - The event is private and only event attendees may view event details.
+        "confidential" - The event is private. This value is provided for compatibility reasons.
+        :param optional attendees: List of mails of attendees for the event. This should be a list of strings (each string a email). It should not contain any thing else. Example ['email1@gmail.com','email2@icloud.com'].
+        :param optional send_updates: Defaults to True. Whether to send updates to the attendees of the event.
+        :param optional guests_can_modify: Whether guests can modify the event.
+        :param optional calendar_id: ID of the Google Calendar. primary for interacting with primary calendar.
     """
 
     print("\n\nCreating event\n\n")
 
     url = "https://backend.composio.dev/api/v1/actions/googlecalendar_create_event/execute"
 
+    # Build the payload
+    input_data = {
+        "start_datetime": start_datetime,
+        "end_datetime": end_datetime,
+        "title": title
+    }
+
+    if description is not None:
+        input_data["description"] = description
+    if eventType is not None:
+        input_data["eventType"] = eventType
+    if create_meeting_room is not None:
+        input_data["create_meeting_room"] = create_meeting_room
+    if guestsCanSeeOtherGuests is not None:
+        input_data["guestsCanSeeOtherGuests"] = guestsCanSeeOtherGuests
+    if guestsCanInviteOthers is not None:
+        input_data["guestsCanInviteOthers"] = guestsCanInviteOthers
+    if location is not None:
+        input_data["location"] = location
+    if visibility is not None:
+        input_data["visibility"] = visibility
+    if attendees is not None:
+        input_data["attendees"] = attendees
+    if send_updates is not None:
+        input_data["send_updates"] = send_updates
+    if guests_can_modify is not None:
+        input_data["guests_can_modify"] = guests_can_modify
+    if calendar_id is not None:
+        input_data["calendar_id"] = calendar_id
+
     payload = {
         "connectedAccountId": connectedAccountId,
         "appName": "googlecalendar",
-        "input": {
-            "start_datetime": start_datetime,
-            "end_datetime": end_datetime,
-            "summary": title,
-            "description": description
-        }
+        "input": input_data
     }
 
     headers = {
@@ -103,15 +149,18 @@ def find_events(connectedAccountId: str, query: str | None = None, max_results: 
     }
 
     response = requests.post(url, json=payload, headers=headers)
-    print(payload, "\n\n")
-    print(response.json())
+    # print(payload, "\n\n")
+    # print(response.json())
     response_json = response.json()
 
     if response_json["executed"]:
         events = response_json["response"]["event_data"]
         if events:
-            event_list = [event["summary"] for event in events]
-            return f"Found events: {', '.join(event_list)}"
+            event_list = [] # List to store the event summaries
+            for event in events:
+                event_list.append(event["summary"])
+            print(f"Found events successfully! \nThe events are: {', '.join(event_list)}")
+            return f"Found events successfully! \nThe events are: {', '.join(event_list)}"
         else:
             return "No events found"
     else:
@@ -122,7 +171,7 @@ def find_events(connectedAccountId: str, query: str | None = None, max_results: 
 
 
 @tool("Delete Event")
-def delete_event(connectedAccountId: str, event_id: str, calendar_id: str | None = None):
+def delete_event(connectedAccountId: str, event_id: str, calendar_id: str | None = None) -> str:
     """
         Delete an event from a Google Calendar.
         :param required connectedAccountId: The ID of the connected account.
@@ -165,7 +214,7 @@ def delete_event(connectedAccountId: str, event_id: str, calendar_id: str | None
 
 
 @tool("Update Event")
-def update_event(connectedAccountId: str, event_id: str, start_datetime: str | None = None, end_datetime: str | None = None, title: str | None = None, description: str | None = None):
+def update_event(connectedAccountId: str, event_id: str, start_datetime: str | None = None, end_datetime: str | None = None, title: str | None = None, description: str | None = None) -> str:
     """
         Update an existing event in a Google Calendar.
         :param required connectedAccountId: The ID of the connected account.
@@ -217,7 +266,7 @@ def update_event(connectedAccountId: str, event_id: str, start_datetime: str | N
 
 
 @tool("Remove Attendee from Event")
-def remove_attendee_event(connectedAccountId: str, event_id: str, attendee_email: str, calendar_id: str | None = None):
+def remove_attendee_event(connectedAccountId: str, event_id: str, attendee_email: str, calendar_id: str | None = None) -> str:
     """
         Remove an attendee from an existing event in a Google Calendar.
         :param required connectedAccountId: The ID of the connected account.
@@ -260,4 +309,52 @@ def remove_attendee_event(connectedAccountId: str, event_id: str, attendee_email
             return "Your account's authentication credentials is expired. Please re authenticate again by using `!authenticate` command."
 
         return "Something went wrong in removing the attendee from the event."
+    
+
+@tool("Quick Add Event")
+def quick_add_event(connectionAccountId: str, calendar_id: str | None = None, text: str | None = None, send_updates: str | None = None) -> str:
+    """
+        Create a new event in a Google Calendar based on a simple text string like 'Appointment at Somewhere on June 3rd 10am-10:25am' You can only give title and timeslot here. No recurring meetings and no attendee can be added here. This is not a preferred endpoint. Only use this if no other endpoint is possible.
+
+        :param required connectionAccountId: The ID of the connected account.
+        :param optional calendar_id: Calendar identifier. To retrieve calendar IDs call the calendarList.list method. If you want to access the primary calendar of the currently logged in user, use the 'primary' keyword.
+        :param optional text: The text describing the event to be created.
+        :param optional send_updates: Guests who should receive notifications about the creation of the new event. Acceptable values are: 'all': Notifications are sent to all guests. 'externalOnly': Notifications are sent to non-Google Calendar guests only. 'none': No notifications are sent.
+    """
+
+    print("\n\nQuick adding event\n\n")
+
+    url = "https://backend.composio.dev/api/v1/actions/googlecalendar_quick_add/execute"
+
+    # Build the payload
+    input_data = {}
+    if calendar_id is not None:
+        input_data["calendar_id"] = calendar_id
+    if text is not None:
+        input_data["text"] = text
+    if send_updates is not None:
+        input_data["send_updates"] = send_updates
+
+    payload = {
+        "connectedAccountId": connectionAccountId,
+        "appName": "googlecalendar",
+        "input": input_data
+    }
+
+    headers = {
+        "X-API-Key": COMPOSIO_API_KEY,
+        "Content-Type": "application/json"
+    }
+
+    response = requests.post(url, json=payload, headers=headers)
+    response_json = response.json()
+
+    if response_json["executed"]:
+        return "Quick event created successfully"
+    else:
+        if int(response_json["response"]["error"]["code"]) == 401:
+            return "Your account's authentication credentials is expired. Please re authenticate again by using `!authenticate` command."
+
+        return "Something went wrong in creating a quick event."
+
     

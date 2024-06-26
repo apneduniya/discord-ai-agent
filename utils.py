@@ -54,7 +54,7 @@ def manage_events(connectedAccountId: str, prompt: str) -> str:
         The connected account ID (connectedAccountId) is {connectedAccountId}.
         """,
         agent=calendar_agent,
-        expected_output="Successfully scheduled the events. Also your final answer should be a statement which fits the prompt dont say `Successfully scheduled the events`, also give more human like response and add some emojis if necessary.",
+        expected_output="Successfully scheduled or found the events. Also your final answer should be a statement which fits the prompt dont say `Successfully scheduled the events` or `Successfully scheduled or found the events`, also give more human like response and add some emojis if necessary.",
         on_result=log_response,
     )
 
