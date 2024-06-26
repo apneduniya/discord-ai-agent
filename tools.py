@@ -51,7 +51,7 @@ def create_event(connectedAccountId: str, start_datetime: str, end_datetime: str
     input_data = {
         "start_datetime": start_datetime,
         "end_datetime": end_datetime,
-        "title": title
+        "summary": title
     }
 
     if description is not None:
@@ -158,7 +158,11 @@ def find_events(connectedAccountId: str, query: str | None = None, max_results: 
         if events:
             event_list = [] # List to store the event summaries
             for event in events:
-                event_list.append(event["summary"])
+                try:
+                    if event["summary"]:
+                        event_list.append(event["summary"])
+                except KeyError:
+                    pass
             print(f"Found events successfully! \nThe events are: {', '.join(event_list)}")
             return f"Found events successfully! \nThe events are: {', '.join(event_list)}"
         else:
