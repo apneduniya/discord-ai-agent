@@ -2,8 +2,6 @@ from crewai_tools import tool
 import requests
 import dotenv
 import os
-from google.oauth2.credentials import Credentials
-from gcsa.google_calendar import GoogleCalendar
 from utils.calendar import get_calendar_by_connectedAccountId
 
 

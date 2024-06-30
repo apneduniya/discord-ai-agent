@@ -13,6 +13,21 @@ DISCORD_BOT_TOKEN = os.getenv("DISCORD_BOT_TOKEN")
 INTEGRATION_ID = os.getenv("INTEGRATION_ID")
 COMPOSIO_API_KEY = os.getenv("COMPOSIO_API_KEY")
 
+
+# Create a database to store user data
+
+if not os.path.exists('./db'):
+    os.makedirs('./db')
+
+if not os.path.exists('./db/temp_user.json'):
+    with open('./db/temp_user.json', 'w') as f:
+        f.close()
+
+if not os.path.exists('./db/user.json'):
+    with open('./db/user.json', 'w') as f:
+        f.close()
+
+
 temp_user_db = TinyDB('./db/temp_user.json') # Temporary database to store user data for the current session
 user_db = TinyDB('./db/user.json')
 
