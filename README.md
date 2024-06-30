@@ -8,18 +8,18 @@
 <details>
   <summary>Table of Contents</summary>
   <ol>
-    <li><a href="#features">Features</a></li>
-    <li><a href="#how-i-used-composio?">How I Used Composio?</a></li>
+    <li><a href="#-features">Features</a></li>
+    <li><a href="#-how-i-used-composio">How I Used Composio?</a></li>
     <li>
-      <a href="#getting-started">Getting Started</a>
+      <span>Getting Started</span>
       <ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#steps-to-run">Steps to Run</a></li>
+        <li><a href="#-prerequisites">Prerequisites</a></li>
+        <li><a href="#-steps-to-run">Steps to Run</a></li>
       </ul>
     </li>
-    <li><a href="#project-structure">Project Structure</a></li>
-    <li><a href="#contributing">Contributing</a></li>
-    <li><a href="#license">License</a></li>
+    <li><a href="#-project-structure">Project Structure</a></li>
+    <li><a href="#-contributing">Contributing</a></li>
+    <li><a href="#-license">License</a></li>
   </ol>
 </details>
 
