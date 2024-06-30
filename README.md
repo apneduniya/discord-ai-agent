@@ -63,7 +63,7 @@ python3 main.py
 ```bash
 utils
 ├── calendar.py
-├── manage_events.py
+└── manage_events.py
 .env.example
 .gitignore
 LICENSE
