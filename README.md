@@ -20,6 +20,7 @@
     <li><a href="#%EF%B8%8F-project-structure">Project Structure</a></li>
     <li><a href="#-contributing">Contributing</a></li>
     <li><a href="#-license">License</a></li>
+    <li><a href="#-acknowledgments">Acknowledgments<a/></li>
   </ol>
 </details>
 
@@ -105,6 +106,15 @@ python3 main.py
 5. Create a pull request.
 
 <br />
+
+## ✍ Acknowledgments
+This project couldn't be there if they didn't be there!
+- [Composio](https://composio.dev/)
+- [discord.py](https://discordpy.readthedocs.io/en/stable/)
+- [crew AI](https://docs.crewai.com/)
+- [Gemini](https://gemini.google.com/app)
+
+Even something was gone wrong while making this project but composio team helped me to over come the issues and I am really thankful to it!
 
 ## 🧾 License
 This project is licensed under the [MIT License](LICENSE).
