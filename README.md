@@ -1,19 +1,26 @@
 # Discord AI Agent
 
-🤖 Meet our new AI Agent for Discord! 🎉 This intelligent bot connects your Discord to Google Calendar, making it a breeze to manage all your calendar activities right from your favorite chat app. 💬🔗
+🤖 Meet our new AI made using [**composio**](https://www.composio.dev/) & [**crew AI**](https://docs.crewai.com/)! 🎉 This bot connects with your **Google Calendar**, making it a breeze to manage all your calendar activities right from _discord_. 💬🔗
 <br />
-<hr />
-
-### In discord...
-![image](https://github.com/apneduniya/discord-ai-agent/assets/113763427/33ce6800-f06e-4dbe-88f9-a28088671959)
-
 <br />
 
-### In google calendar...
-![image](https://github.com/apneduniya/discord-ai-agent/assets/113763427/2a7ca46e-895a-495b-a64c-6d81b83c9a64)
-![image](https://github.com/apneduniya/discord-ai-agent/assets/113763427/9befbee6-d455-4b8a-9aec-91c697891e81)
+## Features
+You can scheduled events just by normal chatting with our bot and you can:
 
-<hr />
+- **Create** events even by adding someone via email, create google meeting room and all the neccessary features.
+- **Find** upcoming events.
+- **Update** & **Delete** existing events.
+- **Create Quick** events.
+- **Remove attendee** from an event
+
+## Prerequisites
+You should have
+
+- Python 3.8 or higher
+- GEMINI API KEY
+- COMPOSIO API KEY
+- Discord Bot Token
+- And an [integration id](https://docs.composio.dev/api-reference/integrations/create-a-new-integration) from composio.
 
 ## Steps to Run
 **Navigate to the Project Directory:**
