@@ -2,19 +2,22 @@ from crewai_tools import tool
 import requests
 import dotenv
 import os
+from google.oauth2.credentials import Credentials
+from gcsa.google_calendar import GoogleCalendar
+from utils.calendar import get_calendar_by_connectedAccountId
 
 
-# Load the environment variables
 dotenv.load_dotenv()
+COMPOSIO_API_KEY = os.environ["COMPOSIO_API_KEY"] # Get the API key from composio
 
-# Get the API key from composio
-COMPOSIO_API_KEY = os.environ["COMPOSIO_API_KEY"]
+# calendar = GoogleCalendar(credentials_path='./.credentials/credentials.json')
 
 
 @tool("Create Event")
 def create_event(connectedAccountId: str, start_datetime: str, end_datetime: str, title: str | None = None, description: str | None = None, eventType: str | None = None, create_meeting_room: bool | None = None, guestsCanSeeOtherGuests: bool | None = None, guestsCanInviteOthers: bool | None = None, location: str | None = None, visibility: str | None = None, attendees: list | None = None, send_updates: bool | None = None, guests_can_modify: bool | None = None, calendar_id: str | None = None) -> str:
     """
         Create a new event in a Google Calendar.
+
         :param required connectedAccountId: The ID of the connected account.
         :param required start_datetime: The start date and time of the event in ISO 8601 format.
         :param required end_datetime: The end date and time of the event in ISO 8601 format.
@@ -108,6 +111,7 @@ def create_event(connectedAccountId: str, start_datetime: str, end_datetime: str
 def find_events(connectedAccountId: str, query: str | None = None, max_results: int | None = None, time_max: str | None = None, time_min: str | None = None, event_types: str | None = None, calendar_id: str | None = None) -> str:
     """
         Find events in a Google Calendar.
+
         :param required connectedAccountId: The ID of the connected account.
         :param optional query: Search terms to find events that match these terms in the event's summary, description, location, attendee's displayName, attendee's email, organizer's displayName, organizer's email, etc if needed.
         :param optional max_results: The maximum number of events to return.
@@ -160,7 +164,7 @@ def find_events(connectedAccountId: str, query: str | None = None, max_results: 
             for event in events:
                 try:
                     if event["summary"]:
-                        event_list.append(event["summary"])
+                        event_list.append(f'`{event["summary"]}`')
                 except KeyError:
                     pass
             print(f"Found events successfully! \nThe events are: {', '.join(event_list)}")
@@ -178,6 +182,8 @@ def find_events(connectedAccountId: str, query: str | None = None, max_results: 
 def delete_event(connectedAccountId: str, event_id: str, calendar_id: str | None = None) -> str:
     """
         Delete an event from a Google Calendar.
+        Event ID can be obtained by using the `Get Event ID via Title` tool.
+
         :param required connectedAccountId: The ID of the connected account.
         :param required event_id: The ID of the event to delete.
         :param optional calendar_id: The ID of the calendar to delete the event from.
@@ -208,8 +214,12 @@ def delete_event(connectedAccountId: str, event_id: str, calendar_id: str | None
     response = requests.post(url, json=payload, headers=headers)
     response_json = response.json()
 
+    print(response)
+    print(response_json)
+
     if response_json["executed"]:
-        return "Event deleted successfully"
+        return "The event is deleted successfully! "
+        
     else:
         if int(response_json["response"]["error"]["code"]) == 401:
             return "Your account's authentication credentials is expired. Please re authenticate again by using `!authenticate` command."
@@ -221,6 +231,8 @@ def delete_event(connectedAccountId: str, event_id: str, calendar_id: str | None
 def update_event(connectedAccountId: str, event_id: str, start_datetime: str | None = None, end_datetime: str | None = None, title: str | None = None, description: str | None = None) -> str:
     """
         Update an existing event in a Google Calendar.
+        Event ID can be obtained by using the `Get Event ID via Title` tool.
+
         :param required connectedAccountId: The ID of the connected account.
         :param required event_id: The ID of the event to update.
         :param optional start_datetime: The new start date and time of the event in ISO 8601 format.
@@ -259,9 +271,12 @@ def update_event(connectedAccountId: str, event_id: str, start_datetime: str | N
 
     response = requests.post(url, json=payload, headers=headers)
     response_json = response.json()
+    print(response)
+    print(response_json)
 
     if response_json["executed"]:
         return "Event updated successfully"
+
     else:
         if int(response_json["response"]["error"]["code"]) == 401:
             return "Your account's authentication credentials is expired. Please re authenticate again by using `!authenticate` command."
@@ -273,6 +288,8 @@ def update_event(connectedAccountId: str, event_id: str, start_datetime: str | N
 def remove_attendee_event(connectedAccountId: str, event_id: str, attendee_email: str, calendar_id: str | None = None) -> str:
     """
         Remove an attendee from an existing event in a Google Calendar.
+        Event ID can be obtained by using the `Get Event ID via Title` tool.
+
         :param required connectedAccountId: The ID of the connected account.
         :param required event_id: The ID of the event.
         :param required attendee_email: The email of the attendee to remove.
@@ -360,5 +377,35 @@ def quick_add_event(connectionAccountId: str, calendar_id: str | None = None, te
             return "Your account's authentication credentials is expired. Please re authenticate again by using `!authenticate` command."
 
         return "Something went wrong in creating a quick event."
+    
+
+@tool("Get Event ID via Title")
+def get_event_id_by_title(connectionAccountId: str, title: str) -> str:
+    """
+        Get the event ID by title in a Google Calendar.
+
+        :param required connectionAccountId: The ID of the connected account.
+        :param required title: The title of the event.
+
+        You can use this event ID to perform other actions on the event like updating, deleting, etc.
+    """
+
+    print("\n\nGetting event ID by title\n\n")
+
+    calendar = get_calendar_by_connectedAccountId(connectionAccountId)
+
+    events = list(calendar.get_events(
+        calendar_id="primary",
+        single_events=True,
+        order_by="startTime",
+        query=title
+    ))
+    
+    if not events:
+        return "No events found with the given title."
+    
+    event = events[0]
+    return event.event_id
+
 
     

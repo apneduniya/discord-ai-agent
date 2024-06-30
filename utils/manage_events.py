@@ -8,7 +8,8 @@ from tools import (
     create_event,
     find_events,
     update_event,
-    delete_event
+    delete_event,
+    get_event_id_by_title,
 )
 
 
@@ -40,7 +41,7 @@ def manage_events(connectedAccountId: str, prompt: str) -> str:
         backstory="""You are an AI agent responsible for taking actions on Google Calendar on users' behalf.
         You need to take action on Calendar using Google Calendar APIs. Use correct tools to run APIs from the given tool-set.""",
         verbose=True,
-        tools=[create_event, find_events, update_event, delete_event],
+        tools=[get_event_id_by_title, create_event, find_events, update_event, delete_event],
         llm=llm,
     )
 
