@@ -254,7 +254,7 @@ def update_event(connectedAccountId: str, event_id: str, start_datetime: str | N
     if end_datetime is not None:
         input_data["end_datetime"] = end_datetime
     if title is not None:
-        input_data["title"] = title
+        input_data["summary"] = title
     if description is not None:
         input_data["description"] = description
 
