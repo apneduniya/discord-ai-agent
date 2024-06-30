@@ -16,10 +16,6 @@ pip install -r requirements.txt
 echo "Login to your Composio acount"
 composio login
 
-# Add trello tool
-echo "Add Trello tool. Finish the flow"
-composio add googlecalendar
-
 # Copy env backup to .env file
 if [ -f ".env.example" ]; then
     echo "Copying .env.example to .env..."
