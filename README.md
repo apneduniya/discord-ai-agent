@@ -4,6 +4,15 @@
 
 <br />
 
+## Table of Contents
+- [Features](#features)
+- [How I used composio?](#how-i-used-composio)
+- [Prerequisites](#prerequisites)
+- [Steps to Run](#steps-to-run)
+- [Project structure](#project-structure)
+- [Contributing](#contributing)
+- [License](#license)
+
 ## 📙 Features
 You can scheduled events just by normal chatting with our bot and you can:
 
