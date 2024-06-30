@@ -64,14 +64,11 @@ python3 main.py
 utils
 ├── calendar.py
 ├── manage_events.py
-└── __pycache__
-    ├── calendar.cpython-310.pyc
-    └── manage_events.cpython-310.pyc
+.env.example
 .gitignore
 LICENSE
-main.py
-.env.example
 README.md
+main.py
 requirements.txt
 setup.sh
 tools.py
