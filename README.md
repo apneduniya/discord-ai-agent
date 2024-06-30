@@ -8,6 +8,7 @@
 <details>
   <summary>Table of Contents</summary>
   <ol>
+    <li><a href="#-demo">Demo</a></li>
     <li><a href="#-features">Features</a></li>
     <li><a href="#-how-i-used-composio">How I Used Composio?</a></li>
     <li>
@@ -24,7 +25,8 @@
   </ol>
 </details>
 
-
+## 🎥 DEMO
+[![demo video](https://img.youtube.com/vi/___DcDDQK-k/0.jpg)](https://www.youtube.com/watch?v=___DcDDQK-k)
 
 ## 📙 Features
 You can scheduled events just by normal chatting with our bot and you can:
