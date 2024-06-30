@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 from tinydb import TinyDB, Query
 import requests 
 import json
-from utils import manage_events
+from utils.manage_events import manage_events
 
 
 load_dotenv()

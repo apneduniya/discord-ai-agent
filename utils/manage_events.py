@@ -28,7 +28,7 @@ timezone = datetime.now().astimezone().tzinfo
 def manage_events(connectedAccountId: str, prompt: str) -> str:
     """
         Run the crew to manage events in Google Calendar.
-        :param required connectedAccountId: The ID of the connected account.
+        :param required connectedAccountId: The ID of the connected account of the user.
         :param required prompt: The prompt for the crew to follow.
     """
 

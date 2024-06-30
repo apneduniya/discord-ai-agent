@@ -132,7 +132,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
-credentials.json
+.credentials/
 
 # Spyder project settings
 .spyderproject
