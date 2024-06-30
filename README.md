@@ -82,17 +82,18 @@ python3 main.py
 ## 🏛️ Project structure
 
 ```bash
-utils
-├── calendar.py
-└── manage_events.py
-.env.example
-.gitignore
-LICENSE
-README.md
-main.py
-requirements.txt
-setup.sh
-tools.py
+.
+├──utils
+    ├── calendar.py
+    └── manage_events.py
+├──.env.example
+├──.gitignore
+├──LICENSE
+├──README.md
+├──main.py
+├──requirements.txt
+├──setup.sh
+└──tools.py
 ```
 
 <br />
