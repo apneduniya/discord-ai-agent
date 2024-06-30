@@ -58,6 +58,25 @@ python3 main.py
 
 <br />
 
+## 🏛️ Project structure
+
+```bash
+utils
+├── calendar.py
+├── manage_events.py
+└── __pycache__
+    ├── calendar.cpython-310.pyc
+    └── manage_events.cpython-310.pyc
+.gitignore
+LICENSE
+main.py
+.env.example
+README.md
+requirements.txt
+setup.sh
+tools.py
+```
+
 ## 🤗 Contributing
 1. Fork the repository.
 2. Create a new branch: `git checkout -b feature-name`.
