@@ -35,12 +35,8 @@ You can scheduled events just by normal chatting with our bot and you can:
 - **Create Quick** events.
 - **Remove attendee** from an event
 
-<br />
-
 ## 🤔 How I used composio?
 **Composio** was very _crucial and reliable tool_ for making my project. It helped me to make my agentic tools for the agent **much more faster** and **in an easy way** acting like a **pipeline** between _agent_ and _google calendar_. It would really took me many more days if done without this 🔥.
-
-<br />
 
 ## 🫳 Prerequisites
 You should have
@@ -50,8 +46,6 @@ You should have
 - COMPOSIO API KEY
 - Discord Bot Token
 - And an [integration id](https://docs.composio.dev/api-reference/integrations/create-a-new-integration) from composio.
-
-<br />
 
 ## 👣 Steps to Run
 **Navigate to the Project Directory:**
@@ -78,8 +72,6 @@ Now, Fill in the `.env` file with your secrets.
 python3 main.py
 ```
 
-<br />
-
 ## 🏛️ Project structure
 
 ```bash
@@ -96,16 +88,12 @@ python3 main.py
 └── tools.py
 ```
 
-<br />
-
 ## 🤗 Contributing
 1. Fork the repository.
 2. Create a new branch: `git checkout -b feature-name`.
 3. Make your changes.
 4. Push your branch: `git push origin feature-name`.
 5. Create a pull request.
-
-<br />
 
 ## ✍ Acknowledgments
 This project couldn't be there if they didn't be there!
