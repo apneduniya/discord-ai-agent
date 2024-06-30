@@ -17,7 +17,7 @@
         <li><a href="#-steps-to-run">Steps to Run</a></li>
       </ul>
     </li>
-    <li><a href="%EF%B8%8F-project-structure">Project Structure</a></li>
+    <li><a href="#%EF%B8%8F-project-structure">Project Structure</a></li>
     <li><a href="#-contributing">Contributing</a></li>
     <li><a href="#-license">License</a></li>
   </ol>
