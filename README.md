@@ -7,7 +7,7 @@
 ## 📙 Features
 You can scheduled events just by normal chatting with our bot and you can:
 
-- **Create** events even by adding someone via email, create google meeting room and all the neccessary features.
+- **Create** events even by _adding someone via email, create google meeting room_ and all the neccessary features.
 - **Find** upcoming events.
 - **Update** & **Delete** existing events.
 - **Create Quick** events.
