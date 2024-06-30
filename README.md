@@ -1,7 +1,7 @@
 # Discord AI Agent
 
 🤖 Meet our new AI Agent for Discord! 🎉 This intelligent bot connects your Discord to Google Calendar, making it a breeze to manage all your calendar activities right from your favorite chat app. 💬🔗
-< br />
+<br />
 <hr />
 
 ### In discord...
